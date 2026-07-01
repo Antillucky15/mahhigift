@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise 💝</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#b11226;
+    font-family:'Comic Sans MS', cursive;
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+}
+
+/* BIGGER SLIDES */
+.slide{
+    width:min(430px,100%);
+    height:700px;
+    position:absolute;
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    transition:all .6s ease;
+}
+
+.slide.active{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+}
+
+.notebook{
+    width:100%;
+    height:100%;
+    background:#fffafc;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    text-align:center;
+    overflow:hidden;
+}
+
+.pink{
+    color:#ff4d88;
+}
+
+.btn{
+    margin-top:18px;
+    padding:12px 28px;
+    border:none;
+    border-radius:25px;
+    background:#ff4d88;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+/* SONGS */
+.song{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:20px;
+    border:2px solid #ff4d88;
+    color:#ff4d88;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.song:hover{
+    background:#ff4d88;
+    color:white;
+}
+
+/* GIFT CARDS */
+.cards{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+    gap:10px;
+}
+
+.card{
+    width:110px;
+    height:150px;
+    perspective:800px;
+    cursor:pointer;
+}
+
+.card-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 0.8s;
+}
+
+.card.open .card-inner{
+    transform:rotateY(180deg);
+}
+
+.card-face{
+    position:absolute;
+    inset:0;
+    border-radius:12px;
+    backface-visibility:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:8px;
+    text-align:center;
+    font-size:12px;
+}
+
+.card-front{
+    background:#ffe6ee;
+}
+
+.card-front img{
+    width:90%;
+}
+
+.card-back{
+    background:white;
+    transform:rotateY(180deg);
+    color:#ff4d88;
+    font-weight:bold;
+}
+
+/* FINAL LETTER IMPROVED */
+.letter{
+    text-align:left;
+    font-size:15px;
+    line-height:1.9;
+    color:#444;
+    height:520px;
+    overflow-y:auto;
+    padding-right:10px;
+    margin-top:10px;
+}
+
+.signature{
+    margin-top:25px;
+    text-align:right;
+    color:#ff4d88;
+    font-weight:bold;
+    font-size:16px;
+}
+
+/* ENVELOPE */
+.envelope-wrap{
+    margin-top:40px;
+    cursor:pointer;
+}
+
+.envelope{
+    width:240px;
+    height:150px;
+    margin:auto;
+    background:#ffb6c1;
+    border-radius:6px;
+    position:relative;
+}
+
+.envelope:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-left:120px solid transparent;
+    border-right:120px solid transparent;
+    border-top:75px solid #ff8fab;
+}
+
+.letter-paper{
+    position:absolute;
+    width:240px;
+    height:320px;
+    background:white;
+    left:0;
+    bottom:-320px;
+    border-radius:6px;
+    padding:14px;
+    font-size:13px;
+    color:#ff4d88;
+    transition:0.8s;
+    overflow-y:auto;
+    text-align:left;
+    line-height:1.6;
+}
+
+.envelope.open .letter-paper{
+    bottom:-150px;
+}
+
+#slide2Btn{
+    display:none;
+    margin-top:200px;
+}
+
+/* CAKE */
+.cake-area{
+    height:250px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.cake{
+    width:180px;
+    height:120px;
+    position:relative;
+    cursor:pointer;
+}
+
+.cake-half{
+    position:absolute;
+    width:90px;
+    height:120px;
+    overflow:hidden;
+    transition:1s;
+}
+
+.left-half{ left:0; }
+.right-half{ right:0; }
+
+.cake-top{
+    position:absolute;
+    top:-10px;
+    left:0;
+    width:180px;
+    height:25px;
+    background:#ff4d88;
+    border-radius:50%;
+}
+
+.cake-layer{
+    position:absolute;
+    left:0;
+    width:180px;
+    border-radius:12px;
+}
+
+.layer1{
+    bottom:0;
+    height:40px;
+    background:#ffc1d6;
+}
+
+.layer2{
+    bottom:40px;
+    height:40px;
+    background:#ffd8e7;
+}
+
+.layer3{
+    bottom:80px;
+    height:40px;
+    background:#ffeaf2;
+}
+
+.cake.cut .left-half{
+    transform:translateX(-35px) rotate(-8deg);
+}
+
+.cake.cut .right-half{
+    transform:translateX(35px) rotate(8deg);
+}
+
+.cake.cut .right-half{
+    transform:translateX(35px) rotate(8deg);
+}
+
+.candle{
+    width:10px;
+    height:40px;
+    background:white;
+    position:absolute;
+    top:-55px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:4px;
+    z-index:10;
+    cursor:pointer;
+}
+
+.flame{
+    width:14px;
+    height:20px;
+    background:orange;
+    position:absolute;
+    top:-18px;
+    left:-2px;
+    border-radius:50%;
+    animation:flicker .8s infinite;
+}
+
+@keyframes flicker{
+    0%{transform:scale(1);}
+    50%{transform:scale(.85);}
+    100%{transform:scale(1);}
+}
+
+.candle.out .flame{
+    display:none;
+}
+
+#cakeBtn{
+    display:none;
+}
+.confetti{
+    position:fixed;
+    width:10px;
+    height:10px;
+    pointer-events:none;
+    z-index:9999;
+    animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+    from{
+        transform:translateY(-50px) rotate(0deg);
+        opacity:1;
+    }
+    to{
+        transform:translateY(100vh) rotate(720deg);
+        opacity:0;
+    }
+}.heart{
+    position:fixed;
+    color:#ff4d88;
+    font-size:22px;
+    pointer-events:none;
+    animation:floatHeart 6s linear forwards;
+    z-index:999;
+}
+
+@keyframes floatHeart{
+    from{
+        transform:translateY(0);
+        opacity:1;
+    }
+    to{
+        transform:translateY(-100vh);
+        opacity:0;
+    }
+}.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.popup-box{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    width:300px;
+    animation:pop .5s;
+}
+
+@keyframes pop{
+    from{
+        transform:scale(.5);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SLIDE 1 -->
+<div class="slide active" id="s1">
+<div class="notebook">
+
+<div style="font-size:50px;">🐱</div>
+
+<h2 class="pink">Happy Birthday!</h2>
+
+<div class="pink" style="font-size:20px;font-weight:bold;">
+Happy Birthday My Aaluu Aaluu 💖🎂
+</div>
+
+<p style="margin-top:20px;">
+Today is all about celebrating the most amazing person in my world.
+</p>
+
+<div class="pink">
+<b>Ready for ur birthday surprise?</b>
+</div>
+
+<button class="btn" onclick="go(2)">
+Let’s Go 💖
+</button>
+
+</div>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide" id="s2">
+<div class="notebook">
+
+<p style="font-size:18px;">💌 A little letter just for you...</p>
+
+<div class="envelope-wrap" onclick="openEnvelope()">
+
+<div class="envelope" id="env">
+
+<div class="letter-paper">
+
+<b>Happy Birthday, Mahii ❤️</b><br><br>
+
+Today is all about you — your smile, your kindness, and the beautiful person you are. You deserve all the happiness, love, and peace in this world.<br><br>
+
+I know the past few days haven’t been easy for you. Breakups hurt, especially when feelings were real, but please don’t let one person make you forget your worth. You are special, lovable, and stronger than you think. Slowly, everything will heal, and your smile will feel real again.<br><br>
+
+You have such a soft heart and a beautiful way of caring for people. Never change that part of yourself. One day someone will value your love the way it truly deserves.<br><br>
+
+Happy Birthday once again, Mahii 💖<br>
+May this year bring you happiness, healing, and endless reasons to smile.<br><br>
+
+Yours,<br>
+Bhindi ❤️
+
+</div>
+</div>
+</div>
+
+<button id="slide2Btn" class="btn" onclick="go(3)">
+Continue 💕
+</button>
+
+</div>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide" id="s4">
+<div class="notebook">
+
+<h2 class="pink">
+🎂 Cut Your Birthday Cake
+</h2>
+
+<p>First blow the candle, then tap the cake 💖</p>
+
+<div class="cake-area">
+
+<div class="cake" id="cake" onclick="cutCake()">
+
+<div class="candle" id="candle" onclick="blowCandle(event)">
+<div class="flame"></div>
+</div>
+
+<div class="cake-half left-half">
+<div class="cake-top"></div>
+<div class="cake-layer layer1"></div>
+<div class="cake-layer layer2"></div>
+<div class="cake-layer layer3"></div>
+</div>
+
+<div class="cake-half right-half">
+<div class="cake-top"></div>
+<div class="cake-layer layer1"></div>
+<div class="cake-layer layer2"></div>
+<div class="cake-layer layer3"></div>
+</div>
+
+</div>
+</div>
+
+<button id="cakeBtn" class="btn" onclick="go(5)">
+Make a Wish ✨
+</button>
+
+</div>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide" id="s5">
+<div class="notebook">
+
+<h2>It’s cake time 🎂</h2>
+
+<h2 class="pink">
+Make your wish come true ✨
+</h2>
+
+<p style="margin-top:20px;">
+Close your eyes and make your birthday wish 💖
+</p>
+
+<button class="btn" onclick="go(6)">
+I have made my wish 💕
+</button>
+
+</div>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide" id="s3">
+<div class="notebook">
+
+<h2 class="pink">
+Choose your birthday soundtrack 🎶
+</h2>
+
+<div class="pink">
+<b>Now playing:</b>
+</div>
+
+<div id="nowPlaying" class="pink" style="margin-bottom:20px;">
+None
+</div>
+
+<div class="song" onclick="playMusic('Haaye Re(KoshalWorld.Com).mp3','Haaye Re')">
+💕 Haaye Re
+</div>
+
+<div class="song" onclick="playMusic('Sheesha (Aakhya Mai Aakh Ghali Jo Bairan) - Sheesha (Aakhya Mai Aakh Ghali Jo Bairan) (320 kbps).mp3','Sheesha')">
+✨ Sheesha
+</div>
+
+<div class="song" onclick="playMusic('Deewane - Navaan Sandhu.mp3','Deewane')">
+🎉 Deewane
+</div>
+
+<button class="btn" onclick="go(4)">
+Continue to Cake 🎂
+</button>
+
+</div>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide" id="s6">
+<div class="notebook">
+
+<h2 class="pink">
+Special gifts just for you 🎁
+</h2>
+
+<div class="cards">
+
+<div class="card" onclick="openCard(this)">
+<div class="card-inner">
+
+<div class="card-face card-front">
+<img src="mahi1.png">
+</div>
+
+<div class="card-face card-back">
+Happiest bday to the person who is most sweetest, kindest & my all tym fvrt 💕
+</div>
+
+</div>
+</div>
+
+<div class="card" onclick="openCard(this)">
+<div class="card-inner">
+
+<div class="card-face card-front">
+<img src="mahi2.png">
+</div>
+
+<div class="card-face card-back">
+Tera budhi hone ka ek saal aur badh gaya cheers to ur birthday ✨
+</div>
+
+</div>
+</div>
+
+<div class="card" onclick="openCard(this)">
+<div class="card-inner">
+
+<div class="card-face card-front">
+<img src="mahi3.png">
+</div>
+
+<div class="card-face card-back">
+ik aunty bhaut kam karvati h but krna padta h i proud on my gohchhii she deserves 75cr 💖
+</div>
+
+</div>
+</div>
+
+</div>
+
+<button id="finalBtn" class="btn" style="display:none;" onclick="go(7)">
+Open final birthday letter 💗
+</button>
+
+</div>
+</div>
+
+<!-- SLIDE 7 -->
+<div class="slide" id="s7">
+<div class="notebook">
+
+<h2 class="pink">
+💌 Final Birthday Letter
+</h2>
+
+<div class="letter">
+
+<p>
+My dearest, lovely dovely aaluu,
+</p>
+
+<p>
+May this year bring you joy, everything your heart desires,
+and more happiness & blessings than you can imagine.
+</p>
+
+<p>
+Happiest birthday mahhii... ik ham random mile insta pa jab mene request beji phela lga kha accept kregi fir tune accept bhi ki baat bhi ki or genuine tu etni sweet h na bs ik aunty bhaut kam karwati h but unki bhi manburi h unka bhi kam h baki tu hamesha kush rhe ghume fere.
+</p>
+
+<p>
+Mena kbi socha bhi ni tha ki tu meri friend hogi aur wesa bhi mera hamesha dosti ma kta dekhte ya kitni chlti h aur ha ghumi ghumi bhi krenge sth ma kbi moka mila toh And no matter what — whether I’m with you or not —
+I’m always by your side, loving you, supporting you, gift bhi dee dun but whi khi ghr pa faas na jaye esliye ya bna diya gift smj k rekh liyo hope u like it HAPPYY BIRTHDAYY MAHIII..(MY CHAMPAKALI/KAMMO JI).
+</p>
+
+<div class="signature">
+Your Friend,<br>
+(Gohchuu) 💖
+</div>
+
+</div>
+</div>
+</div>
+
+<audio id="bgMusic" loop></audio>
+
+<script>
+let opened = 0;
+let candleBlown = false;
+
+let music = document.getElementById("bgMusic");
+let nowPlaying = document.getElementById("nowPlaying");
+
+function go(n){
+
+document.querySelectorAll('.slide').forEach(s=>{
+s.classList.remove('active');
+});
+
+document.getElementById('s'+n).classList.add('active');
+
+if(n===7){
+startHearts();
+showBirthdayPopup();
+}
+}
+
+function playMusic(src,name){
+
+music.src = src;
+music.play();
+
+nowPlaying.innerText = name;
+}
+
+function openCard(card){
+
+if(!card.classList.contains('open')){
+
+card.classList.add('open');
+
+opened++;
+
+if(opened===3){
+document.getElementById('finalBtn').style.display="inline-block";
+}
+}
+}
+
+function openEnvelope(){
+
+document.getElementById("env").classList.add("open");
+
+document.getElementById("slide2Btn").style.display="inline-block";
+}
+
+function blowCandle(e){
+
+e.stopPropagation();
+
+document.getElementById("candle").classList.add("out");
+
+candleBlown = true;
+}
+
+function cutCake(){
+
+if(!candleBlown) return;
+
+let cake = document.getElementById("cake");
+
+if(cake.classList.contains("cut")) return;
+
+cake.classList.add("cut");
+
+launchConfetti();
+
+setTimeout(()=>{
+document.getElementById("cakeBtn").style.display="inline-block";
+},800);
+
+}
+function launchConfetti(){
+
+for(let i=0;i<120;i++){
+
+let c=document.createElement("div");
+
+c.className="confetti";
+
+c.style.left=Math.random()*100+"vw";
+
+c.style.background=
+["#ff4d88","#ffd700","#7cf29c","#87ceeb","#ffffff"]
+[Math.floor(Math.random()*5)];
+
+document.body.appendChild(c);
+
+setTimeout(()=>{
+c.remove();
+},3000);
+
+}
+
+}
+
+let heartInterval;
+
+function startHearts(){
+
+if(heartInterval) return;
+
+heartInterval=setInterval(()=>{
+
+let h=document.createElement("div");
+
+h.className="heart";
+
+h.innerHTML="💖";
+
+h.style.left=Math.random()*100+"vw";
+
+h.style.bottom="-20px";
+
+document.body.appendChild(h);
+
+setTimeout(()=>{
+h.remove();
+},6000);
+
+},400);
+
+}
+
+function showBirthdayPopup(){
+
+if(document.getElementById("birthdayPopup"))
+return;
+
+let popup=document.createElement("div");
+
+popup.id="birthdayPopup";
+
+popup.className="popup";
+
+popup.innerHTML=`
+<div class="popup-box">
+
+<h2 style="color:#ff4d88;">
+🎉 Happy Birthday Mahii 🎂
+</h2>
+
+<p>
+May your smile never fade and all your wishes come true 💖
+</p>
+
+<button class="btn"
+onclick="document.getElementById('birthdayPopup').remove()">
+Aww Thank You 💕
+</button>
+
+</div>
+`;
+
+document.body.appendChild(popup);
+
+}
+</script>
+
+</body>
+</html>
